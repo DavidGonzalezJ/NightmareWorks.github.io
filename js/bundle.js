@@ -20,6 +20,7 @@ var GameOver = {
         text.anchor.set(0.5);
         //goText.anchor.set(0.5);
         button.addChild(text);
+        text.font = 'VT323';
         
         //TODO 8 crear un boton con el texto 'Return Main Menu' que nos devuelva al menu del juego.
         var button2 = this.game.add.button(400, 400,
@@ -29,6 +30,7 @@ var GameOver = {
         button2.anchor.set(0.5);
         var text2 = this.game.add.text(0, 0, "Return Menu");
         text2.anchor.set(0.5);
+        text2.font = 'VT323';
         button2.addChild(text2);
     },
     
@@ -188,6 +190,7 @@ var MenuScene = {
         this.Judas = this.game.add.audio('Judas');
         this.Judas.loop = true;
         this.Judas.play();
+        this.Judas.volume = 0.2;
         this.game.world.setBounds(0,0,800,600);
         var logo = this.game.add.sprite(this.game.world.centerX, 
                                         this.game.world.centerY, 
@@ -308,7 +311,7 @@ CelestialCross.prototype.move = function(character){
 
     if(this.launched === false){
         this.x = character.x;
-        this.y = character.y-10;
+        this.y = character.y+20;
         this.launched = true;
     }else{
         if(this.dir === 'DERECHA'){
@@ -333,7 +336,7 @@ CelestialCross.prototype.move = function(character){
             this.limit = false;
             return true;
         }
-        this.y = character.y;
+        this.y = character.y+20;
         this.angle += 20;
     }
     return false;
@@ -525,10 +528,10 @@ Teresa.prototype.ecstasyExplosion = function(enemies,sound){
         sound.play();
         enemies.forEach(function (aux){
             //Lo podemos hacer circular, que mola más
-            if (aux.x < self.x + 300 && aux.y < self.y + 300)
+            if ((aux.x < self.x + 600 && aux.x> self.x-600) && (aux.y < self.y + 600 && aux.y>self.y-600))
                 aux.kill();
         });
-        this.ecstasy =false;//ecstasy = false;
+        this.ecstasy = false;//ecstasy = false;
     }
 }
 
@@ -695,7 +698,7 @@ var PlayScene = {
         this.launchSound = this.game.add.audio('ThrowFx');
         this.ecstasySound = this.game.add.audio('Onda');
         this.jumpEffect.loop = false;
-        this.problem.volume = 0.7;
+        this.problem.volume = 0.2;
         this.problem.play();
         this.problem.loop = true;
 
@@ -730,8 +733,8 @@ var PlayScene = {
         //nombre de la animación, frames, framerate, isloop
 
         //Creamos al player con un sprite por defecto.
-        //this._Teresa = new Teresa (this.game, 1620,200);
-        this._Teresa = new Teresa (this.game, 100, 2928);
+        this._Teresa = new Teresa (this.game, 1520,200);
+        //this._Teresa = new Teresa (this.game, 100, 2928);
 
         //Posteriormente haremos que cambie el fondo si se ha comido la magdalena
         //this._Muffin1 = new EcstasyMuffin(this.game, 42*tile, 2928);
@@ -742,8 +745,9 @@ var PlayScene = {
         this.cross = new CelestialCross(this._Teresa,'cross',this.game);
 
         ///Dios
-        this.god = new God(1620, 200, 'God',this.game);
-        this.god.scale.setTo(0.25);
+        this.god = new God(1620, -80, 'God',this.game);
+        this.god.scale.setTo(1);
+        this.god.opacity = 0.25;
 
         //Trigger del HellFloor
         this.hellFloorTrigger = new HellTrigger(this.game,2880,this.god.y);
@@ -807,13 +811,15 @@ var PlayScene = {
 
         this._Teresa.transitionFrames(collisionWithTilemap, movement, this.game, this.jumpEffect);
         this._Teresa.statesManag(movement,moveDirection);
-        var launch; 
-
-
+        ////////////MOVEMENT PLAYER////////////
+        this._Teresa.movement(moveDirection,50,
+            this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
+        
         ///////////CROSS LAUNCH/////////////////
+        var launch; 
         if(this.launches() && !this._Teresa._lanzamiento){
             this._Teresa._lanzamiento = true;
-             this.launchSound.play();
+            this.launchSound.play();
             this.cross.setDirection(this._Teresa);
         }
         if(this._Teresa._lanzamiento && this.cross.move(this._Teresa)){
@@ -833,9 +839,7 @@ var PlayScene = {
             this.muffinSound.play();
         }
 
-        ////////////MOVEMENT PLAYER////////////
-        this._Teresa.movement(moveDirection,50,
-            this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
+
 
         ////////COLISION/////
 
