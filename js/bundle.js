@@ -733,8 +733,8 @@ var PlayScene = {
         //nombre de la animación, frames, framerate, isloop
 
         //Creamos al player con un sprite por defecto.
-        this._Teresa = new Teresa (this.game, 1520,200);
-        //this._Teresa = new Teresa (this.game, 100, 2928);
+       // this._Teresa = new Teresa (this.game, 1520,200);
+        this._Teresa = new Teresa (this.game, 100, 2928);
 
         //Posteriormente haremos que cambie el fondo si se ha comido la magdalena
         //this._Muffin1 = new EcstasyMuffin(this.game, 42*tile, 2928);
